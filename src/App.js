@@ -1,25 +1,103 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+// 1. Framework Layout Frame
+import Layout from './components/Layout';
+
+// 2. Public Full-Screen Gateway Page
+import Login from './components/authenticator/login';
+
+import SignUp from './components/authenticator/SignUp';
+
+// 💡 3. YOUR EXISTING ANIMATION LAYER IMPORT
+// This links directly to your dedicated animation file!
+import AnimatedPage from './components/AnimatedPage';
+
+// =========================================================================
+// 4. PUBLIC ROUTE PLACEHOLDERS (Wrapped with your animation component)
+// =========================================================================
+const ForgetPassword = () => <AnimatedPage><div className="p-10 text-slate-700 text-sm">Forgot Password Screen</div></AnimatedPage>;
+const ResetPassword = () => <AnimatedPage><div className="p-10 text-slate-700 text-sm">Reset Credentials Form</div></AnimatedPage>;
+
+// =========================================================================
+// 5. MAIN INTERIOR DASHBOARD AREA PAGES (Wrapped with your animation component)
+// =========================================================================
+const Dashboard = () => (
+  <AnimatedPage>
+    <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs">
+      <h2 className="text-base font-bold text-slate-800 mb-1">Dashboard Matrix Overview</h2>
+      <p className="text-xs text-slate-400">Welcome back to the Eko Electricity Distribution Company grid manager system portal.</p>
+    </div>
+  </AnimatedPage>
+);
+
+const UserManagement = () => (
+  <AnimatedPage>
+    <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs">
+      <h2 className="text-base font-bold text-slate-800 mb-1">User Account Management</h2>
+      <p className="text-xs text-slate-400">Configure administrative access parameters and corporate workforce credentials.</p>
+    </div>
+  </AnimatedPage>
+);
+
+const Course = () => (
+  <AnimatedPage>
+    <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs">
+      <h2 className="text-base font-bold text-slate-800 mb-1">Course & Training Modules</h2>
+      <p className="text-xs text-slate-400">Deploy technical training guides, grid safety assessments, and procedural courses.</p>
+    </div>
+  </AnimatedPage>
+);
+
+const Reviews = () => (
+  <AnimatedPage>
+    <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs">
+      <h2 className="text-base font-bold text-slate-800 mb-1">Consumer Reviews & Performance Feedback</h2>
+      <p className="text-xs text-slate-400">Analyze consumer reports, customer experience benchmarks, and feed metrics.</p>
+    </div>
+  </AnimatedPage>
+);
+
+const Department = () => (
+  <AnimatedPage>
+    <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs">
+      <h2 className="text-base font-bold text-slate-800 mb-1">Department Operations Hub</h2>
+      <p className="text-xs text-slate-400">Manage internal district grid divisions and transmission sectors.</p>
+    </div>
+  </AnimatedPage>
+);
+
+// =========================================================================
+// 6. MASTER ROUTER ARCHITECTURE
+// =========================================================================
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
+    <BrowserRouter>
+      <Routes>
+        
+        {/* Full screen static views */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+        {/* Core Administrative Framework (Sidebar + Header Structure) */}
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          
+          {/* Internal target links inject beautifully into the layout with slick transitions */}
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="course" element={<Course />} />
+          <Route path="reviews" element={<Reviews />} />
+          <Route path="department" element={<Department />} />
+        </Route>
+
+        {/* Safety catch-all path tracker redirection element */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 
