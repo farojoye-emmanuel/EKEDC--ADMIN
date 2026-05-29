@@ -36,16 +36,19 @@ function Layout() {
       `}>
         <div className="flex flex-col gap-10">
           {/* Logo */}
-          <div className="px-3">
-            <div className="bg-white p-2 rounded-md shadow-sm inline-block border border-slate-200">
-              <span className="font-extrabold text-xl tracking-wider text-[#050B33]">
-                EK<span className="text-amber-500">⚡</span>DC
-              </span>
-              <div className="text-[6px] text-[#050B33] font-bold tracking-tighter uppercase border-t border-amber-500 mt-0.5 text-center">
-                Eko Electricity Distribution
-              </div>
-            </div>
-          </div>
+          {/* Logo Block inside Layout.jsx */}
+<div className="px-3">
+  {/* 💡 This wraps your logo to make it match your theme's design styling */}
+  <div className="px-4 py-3 flex items-center justify-center">
+    
+    <img 
+      src="/images/EKEDC.png" // 💡 REPLACE THIS with your exact image file name (e.g., logo.png or ekedc-logo.png)
+      alt="EKEDC" 
+      className="w-[120px] h-auto block object-left object-contain" // Keeps the image clear, constrained, and perfectly centered
+    />
+
+  </div>
+</div>
 
           {/* Nav Items */}
           <nav className="flex flex-col gap-1.5">
