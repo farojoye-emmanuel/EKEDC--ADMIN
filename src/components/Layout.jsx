@@ -26,7 +26,7 @@ function Layout() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans antialiased">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-100">
       
       {/* 1. SIDEBAR STRUCTURE */}
       <aside className={`
@@ -36,24 +36,19 @@ function Layout() {
       `}>
         <div className="flex flex-col gap-10">
           {/* Logo */}
-          {/* Logo Block inside Layout.jsx */}
-<div className="px-3">
-  {/* 💡 This wraps your logo to make it match your theme's design styling */}
-  <div className="px-4 py-3 flex items-center justify-center">
-    
-    <img 
-      src="/images/EKEDC.png" // 💡 REPLACE THIS with your exact image file name (e.g., logo.png or ekedc-logo.png)
-      alt="EKEDC" 
-      className="w-[120px] h-auto block object-left object-contain" // Keeps the image clear, constrained, and perfectly centered
-    />
-
-  </div>
-</div>
+          <div className="px-3">
+            <div className="px-4 py-3 flex items-center justify-center">
+              <img 
+                src="/images/EKEDC.png" 
+                alt="EKEDC" 
+                className="w-[120px] h-auto block object-left object-contain" 
+              />
+            </div>
+          </div>
 
           {/* Nav Items */}
           <nav className="flex flex-col gap-1.5">
             {navItems.map((item) => {
-              // 💡 Step 3: Use NavLink's built-in 'isActive' state to apply styles automatically
               return (
                 <NavLink
                   key={item.name}
@@ -103,10 +98,11 @@ function Layout() {
       )}
 
       {/* 2. RIGHT FRAME CONTAINMENT */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* 🎯 CHANGED: Added overflow-hidden to keep the viewport locked vertically */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         
         {/* HEADER BLOCK */}
-        <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between lg:justify-end px-6 sticky top-0 z-20 w-full">
+        <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between lg:justify-end px-6 sticky top-0 z-20 w-full flex-shrink-0">
           <button 
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden text-slate-600 text-lg p-2 focus:outline-none"
@@ -115,19 +111,20 @@ function Layout() {
           </button>
 
           <div>
-            <button className="w-7 h-7 rounded-full bg-[#D61C4E] text-white flex items-center justify-center text-xs shadow-xs hover:bg-[#b0143d] transition-colors focus:outline-none">
+            <button className="my w-7 h-7 rounded-full bg-[#D61C4E] text-white flex items-center justify-center text-xs shadow-xs hover:bg-[#b0143d] transition-colors focus:outline-none">
               <FontAwesomeIcon icon={faUser} className="text-[10px]" />
             </button>
           </div>
         </header>
 
-        {/* MAIN VIEWER CONTAINER */}
-        <main className="flex-1 p-6 lg:p-10">
-          <div className="max-w-7xl mx-auto">
-            {/* 💡 Step 4: Outlet automatically injects whatever child component matches the URL */}
-            <Outlet />
-          </div>
-        </main>
+       {/* MAIN VIEWER CONTAINER */}
+<main className="flex-1 bg-slate-100 overflow-hidden min-h-0 flex flex-col">
+  {/* 🎯 FIX: Explicitly sizing this inner wrapper box to match viewport exactly and handle flex inheritance */}
+  <div className="w-full h-[calc(100vh-4rem)] max-w-7xl mx-auto p-4 lg:p-6 flex flex-col min-h-0 items-stretch">
+    {/* 💡 Step 4: Outlet automatically injects whatever child component matches the URL */}
+    <Outlet />
+  </div>
+</main>
 
       </div>
     </div>

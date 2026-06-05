@@ -21,7 +21,7 @@ const Login = () => {
   return (
     <AnimatedPage>
       {/* Outer container matches the light background color behind your design asset */}
-      <div className="min-h-screen bg-slate-50/50 flex items-center justify-center p-4 font-sans antialiased">
+      <div className="min-h-screen bg-[#050B33] flex items-center justify-center p-4 font-sans antialiased">
         
         {/* The Main Centered Login Box Grid Container */}
         <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-slate-100 p-8 sm:p-10 text-center text-slate-800">

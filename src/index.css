@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Add this to index.css or App.css */
+
+/* Define the Fade-In-and-Rise Animation */
+@keyframes fadeInRise {
+  from {
+    opacity: 0;
+    transform: translateY(20px); /* Start 20px lower */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* End at normal position */
+  }
+}
+
+/* Define the Left-to-Right Reveal Animation (Typing Effect) */
+@keyframes textReveal {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+/* Create the custom Tailwind utility classes for easy use */
+@layer utilities {
+  .animate-fade-in-rise {
+    animation: fadeInRise 1s ease-out forwards;
+  }
+  .animate-text-reveal {
+    overflow: hidden; /* Important for the reveal effect */
+    white-space: nowrap; /* Keep text on one line */
+    display: inline-block; /* Essential for width animation */
+    animation: textReveal 2s steps(40, end) forwards;
+    opacity: 0; /* Hidden before reveal starts */
+  }
+}
