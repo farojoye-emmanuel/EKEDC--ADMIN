@@ -11,6 +11,7 @@ import SignUp from './components/authenticator/SignUp';
 // 💡 3. ANIMATION LAYER & DATA PROVIDER IMPORTS
 import AnimatedPage from './components/AnimatedPage';
 import { AssessmentProvider } from './pages/Course/AssessmentContext'; 
+import { ReviewProvider } from './ReviewContext'; // ⚡ GLOBAL REVIEWS CONNECTIVITY HUB
 
 import CoursePage from './pages/Course/Course.jsx';
 import CreateAssessment from './pages/Course/CreateAssessment.jsx'; 
@@ -19,6 +20,22 @@ import ViewAssessment from './pages/Course/ViewAssessment.jsx';
 // 🎯 1. IMPORT YOUR UPLOAD COURSE COMPONENT HERE
 import UploadCourse from './pages/Course/UploadCourse.jsx'; 
 
+// 🚀 IMPORT THE REAL MODULAR DEPARTMENT ORGANIZER HERE
+import DepartmentComponent from './pages/Department/Department.jsx';
+import Roles from './pages/Department/Roles.jsx';
+
+// 👤 IMPORT THE USER MANAGEMENT COMPONENTS HERE
+import UserManagementComponent from './pages/UserManagement/UserManagement.jsx';
+import CreateMentorForm from './pages/UserManagement/CreateMentorForm.jsx';
+import MentorProfile from './pages/UserManagement/MentorProfile.jsx';
+// 🎯 NEW: IMPORT THE MENTEE REGISTRATION FORM HERE
+import CreateMenteeForm from './pages/UserManagement/CreateMenteeForm.jsx';
+import MenteeProfile from './pages/UserManagement/MenteeProfile';
+
+// ⚡ UPDATED IMPORT: Target the modularized ReviewsPage instead of placeholder strings
+import ReviewsPage from './pages/Reviews/QuarterlyReviews'; 
+import Dashboard from './pages/Dashboard/Dashboard.jsx'; // Loaded from your dashboard file 
+
 // =========================================================================
 // 4. PUBLIC ROUTE PLACEHOLDERS 
 // =========================================================================
@@ -26,26 +43,8 @@ const ForgetPassword = () => <AnimatedPage><div className="p-10 text-slate-700 t
 const ResetPassword = () => <AnimatedPage><div className="p-10 text-slate-700 text-sm">Reset Credentials Form</div></AnimatedPage>;
 
 // =========================================================================
-// 5. MAIN INTERIOR DASHBOARD AREA PAGES 
+// 5. MAIN INTERIOR DASHBOARD AREA MOUNTED HOOKS 
 // =========================================================================
-const Dashboard = () => (
-  <AnimatedPage>
-    <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs">
-      <h2 className="text-base font-bold text-slate-800 mb-1">Dashboard Matrix Overview</h2>
-      <p className="text-xs text-slate-400">Welcome back to the Eko Electricity Distribution Company grid manager system portal.</p>
-    </div>
-  </AnimatedPage>
-);
-
-const UserManagement = () => (
-  <AnimatedPage>
-    <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs">
-      <h2 className="text-base font-bold text-slate-800 mb-1">User Account Management</h2>
-      <p className="text-xs text-slate-400">Configure administrative access parameters and corporate workforce credentials.</p>
-    </div>
-  </AnimatedPage>
-);
-
 const Course = ({ courses, setCourses }) => (
   <AnimatedPage>
     <CoursePage courses={courses} setCourses={setCourses} />
@@ -64,37 +63,37 @@ const ViewAssessmentView = () => (
   </AnimatedPage>
 );
 
+const RolesView = () => (
+  <AnimatedPage>
+    <Roles />
+  </AnimatedPage>
+);
+
 // =========================================================================
 // 🎯 2. UPDATED: ANIMATED WRAPPER WITH THE ONADDCOURSE HANDLER MAPPING
 // =========================================================================
 const UploadCourseView = ({ courses, setCourses }) => {
   const handleAddCourse = (newCourse) => {
-    setCourses([...courses, newCourse]); // Safely appends data object to top-level state arrays
+    setCourses([...courses, newCourse]);
   };
 
   return (
     <AnimatedPage>
-      {/* Passing the functional appending array mapping down into the form */}
       <UploadCourse onAddCourse={handleAddCourse} />
     </AnimatedPage>
   );
 };
 
+// ⚡ CLEAN HOOKUP: Wraps the modular functional page logic into your animation layout frame
 const Reviews = () => (
   <AnimatedPage>
-    <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs">
-      <h2 className="text-base font-bold text-slate-800 mb-1">Consumer Reviews & Performance Feedback</h2>
-      <p className="text-xs text-slate-400">Analyze consumer reports, customer experience benchmarks, and feed metrics.</p>
-    </div>
+    <ReviewsPage />
   </AnimatedPage>
 );
 
-const Department = () => (
+const DepartmentView = ({ departments, setDepartments }) => (
   <AnimatedPage>
-    <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs">
-      <h2 className="text-base font-bold text-slate-800 mb-1">Department Operations Hub</h2>
-      <p className="text-xs text-slate-400">Manage internal district grid divisions and transmission sectors.</p>
-    </div>
+    <DepartmentComponent departments={departments} setDepartments={setDepartments} />
   </AnimatedPage>
 );
 
@@ -104,6 +103,11 @@ const Department = () => (
 function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [coursesData, setCoursesData] = useState([]);
+  const [departmentsData, setDepartmentsData] = useState([]);
+  
+  // 👤 GLOBAL STATE CONTAINERS (Prevents data from wiping on view changes)
+  const [mentorsData, setMentorsData] = useState([]);
+  const [menteesData, setMenteesData] = useState([]); // 🎯 PERSISTENT MENTEE STATE ENGINE
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -135,51 +139,112 @@ function App() {
   }
 
   return (
-    <AssessmentProvider>
-      <BrowserRouter>
-        <Routes>
-          
-          {/* Full screen static views */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<SignUp />} />
-          <Route path="/forgot-password" element={<ForgetPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-
-          {/* Core Administrative Framework (Sidebar + Header Structure) */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/login" replace />} />
+    // ⚡ STEP 1: Wrap entire app structure with ReviewProvider data highway
+    <ReviewProvider>
+      <AssessmentProvider>
+        <BrowserRouter>
+          <Routes>
             
-            {/* Internal target links */}
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="users" element={<UserManagement />} />
-            
-            <Route 
-              path="course" 
-              element={<Course courses={coursesData} setCourses={setCoursesData} />} 
-            />
-            
-            <Route path="reviews" element={<Reviews />} />
-            <Route path="department" element={<Department />} />
+            {/* Full screen static views */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<SignUp />} />
+            <Route path="/forgot-password" element={<ForgetPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* SUB-ROUTES INJECTED HERE SO OUTLET RENDERS THEM CORRECTLY */}
-            <Route path="create-assessment" element={<CreateAssessmentView />} />
-            <Route path="view-assessment" element={<ViewAssessmentView />} />
-            
-            {/* ========================================================================= */}
-            {/* 🎯 3. UPDATED ROUTE: Swapped to load the wrapper instead of raw un-mapped component */}
-            {/* ========================================================================= */}
-            <Route 
-              path="upload-course" 
-              element={<UploadCourseView courses={coursesData} setCourses={setCoursesData} />} 
-            />
-          </Route>
+            {/* Core Administrative Framework (Sidebar + Header Structure) */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Navigate to="/login" replace />} />
+              
+              {/* ✅ LIVE REPLACED DASHBOARD ROUTE LINK */}
+              <Route 
+                path="dashboard" 
+                element={
+                  <AnimatedPage>
+                    <Dashboard 
+                      mentors={mentorsData} 
+                      mentees={menteesData} 
+                      courses={coursesData} 
+                    />
+                  </AnimatedPage>
+                } 
+              />
+              
+              {/* 👤 USER ROUTE BRANCHES WITH MENTEE PIPELINES INTEGRATED */}
+              <Route 
+                path="users" 
+                element={
+                  <AnimatedPage>
+                    <UserManagementComponent 
+                      mentors={mentorsData} 
+                      setMentors={setMentorsData} 
+                      mentees={menteesData} 
+                      setMentees={setMenteesData} 
+                    />
+                  </AnimatedPage>
+                } 
+              />
+              <Route 
+                path="users/create-mentor" 
+                element={<AnimatedPage><CreateMentorForm setMentors={setMentorsData} /></AnimatedPage>} 
+              />
+              
+              {/* 🎯 MENTEE PROFILE FORM ENTRY COMPONENT */}
+              <Route 
+                path="users/create-mentee" 
+                element={
+                  <AnimatedPage>
+                    <CreateMenteeForm setMentees={setMenteesData} />
+                  </AnimatedPage>
+                } 
+              />
 
-          {/* Safety catch-all path tracker redirection element */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+              {/* ⚡ ALIGNED TRACKER PATH PARAMETERS PERMANENTLY */}
+              <Route 
+                path="users/mentor-profile/:id" 
+                element={<AnimatedPage><MentorProfile /></AnimatedPage>} 
+              />
 
-        </Routes>
-      </BrowserRouter>
-    </AssessmentProvider>
+              {/* 🎯 MENTEE PROFILE ROUTE WITH THE SAME ANIMATION WRAPPER */}
+              <Route 
+                path="mentees/profile/:id" 
+                element={<AnimatedPage><MenteeProfile /></AnimatedPage>} 
+              />
+
+              {/* ⚡ Unified Route Paths pointing directly to your reviews module */}
+              <Route 
+                path="quarterly-reviews" 
+                element={<Reviews />} 
+              />
+              
+              <Route 
+                path="course" 
+                element={<Course courses={coursesData} setCourses={setCoursesData} />} 
+              />
+              
+              <Route path="reviews" element={<Reviews />} />
+              
+              <Route 
+                path="Department" 
+                element={<DepartmentView departments={departmentsData} setDepartments={setDepartmentsData} />} 
+              />
+              <Route path="Roles" element={<RolesView />} />
+
+              <Route path="create-assessment" element={<CreateAssessmentView />} />
+              <Route path="view-assessment" element={<ViewAssessmentView />} />
+              
+              <Route 
+                path="upload-course" 
+                element={<UploadCourseView courses={coursesData} setCourses={setCoursesData} />} 
+              />
+            </Route>
+
+            {/* Safety catch-all path tracker redirection element */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+
+          </Routes>
+        </BrowserRouter>
+      </AssessmentProvider>
+    </ReviewProvider>
   );
 }
 
